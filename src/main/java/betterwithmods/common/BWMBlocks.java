@@ -8,6 +8,8 @@ import betterwithmods.common.blocks.mechanical.*;
 import betterwithmods.common.blocks.mechanical.multiblock.BlockDummy;
 import betterwithmods.common.blocks.mechanical.tile.*;
 import betterwithmods.common.blocks.mini.*;
+import betterwithmods.common.blocks.miniblocks.BlockDynamicMini;
+import betterwithmods.common.blocks.miniblocks.TileDynamicMini;
 import betterwithmods.common.blocks.tile.*;
 import betterwithmods.common.items.ItemHempSeed;
 import betterwithmods.common.items.ItemSimpleSlab;
@@ -111,6 +113,8 @@ public final class BWMBlocks {
 	public static final Block CANDLE = new BlockCandle().setRegistryName("candle").setCreativeTab(BWCreativeTabs.BWTAB);
 	public static final Block CANDLE_HOLDER = new BlockCandleHolder().setRegistryName("candle_holder").setCreativeTab(BWCreativeTabs.BWTAB);
 
+	public static final Block DYNAMIC_MINI = new BlockDynamicMini().setRegistryName("siding").setCreativeTab(BWCreativeTabs.BWTAB);
+
 	private static final List<Block> BLOCKS = new ArrayList<>();
 
 	public static List<Block> getBlocks() {
@@ -206,6 +210,7 @@ public final class BWMBlocks {
 		registerBlock(INFERNAL_ENCHANTER);
 		registerBlock(CANDLE, new ItemBlockMeta(CANDLE));
 		registerBlock(CANDLE_HOLDER);
+		registerBlock(DYNAMIC_MINI);
 	}
 
 	public static void registerTileEntities() {
@@ -238,7 +243,7 @@ public final class BWMBlocks {
 		GameRegistry.registerTileEntity(TileEntityMultiType.class, "bwm.multiType");
 		GameRegistry.registerTileEntity(TileCamo.class, "bwm.camo");
 		GameRegistry.registerTileEntity(TileEntityProxyBlock.class, "bwm.multiblock_dummy");
-
+		GameRegistry.registerTileEntity(TileDynamicMini.class, "bwm.dynamic_mini");
 	}
 
 	/**

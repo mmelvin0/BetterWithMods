@@ -11,6 +11,7 @@ import betterwithmods.client.render.*;
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.BWMItems;
 import betterwithmods.common.blocks.mechanical.tile.*;
+import betterwithmods.common.blocks.miniblocks.MiniModel;
 import betterwithmods.common.blocks.tile.TileEntityBeacon;
 import betterwithmods.common.entity.*;
 import betterwithmods.manual.api.ManualAPI;
@@ -37,6 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ColorizerGrass;
 import net.minecraft.world.biome.BiomeColorHelper;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -147,6 +149,14 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityJungleSpider.class, RenderJungleSpider::new);
     }
 
+
+    @SubscribeEvent
+    public static void onPostBake(ModelBakeEvent event) {
+        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":mini/siding", "normal"), MiniModel.SIDING);
+        event.getModelRegistry().putObject(new ModelResourceLocation(BWMod.MODID + ":mini/siding", "inventory"), MiniModel.SIDING);
+
+        MiniModel.SIDING.template = RenderUtils.getModel(new ResourceLocation(BWMod.MODID + ":block/mini/siding"));
+    }
 
     public static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition {
 

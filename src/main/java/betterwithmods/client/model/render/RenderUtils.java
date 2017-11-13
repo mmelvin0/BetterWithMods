@@ -13,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -22,6 +24,19 @@ public class RenderUtils {
 
     private static HashMap<String, ModelWithResource> filterLocations = new HashMap<>();
     private static RenderItem renderItem;
+
+    public static IModel getModel(ResourceLocation location) {
+        try {
+            IModel model = ModelLoaderRegistry.getModel(location);
+            if (model == null) {
+                BWMod.logger.error("Model " + location.toString() + " is missing! THIS WILL CAUSE A CRASH!");
+            }
+            return model;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public static boolean filterContains(ItemStack stack) {
         return !stack.isEmpty() && filterLocations.containsKey(stack.getItem().toString() + stack.getMetadata());
@@ -59,8 +74,7 @@ public class RenderUtils {
         minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         int brightness = minecraft.world.getCombinedLight(pos, minecraft.world.getLight(pos));
         preRender(x, y, z);
-
-        TextureAtlasSprite sprite = minecraft.getTextureMapBlocks().getTextureExtry(textureLocation.toString());
+        TextureAtlasSprite sprite = getTextureSprite(textureLocation);
         drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.UP);
         drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.WEST);
         drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.EAST);
@@ -69,6 +83,10 @@ public class RenderUtils {
 
         t.draw();
         postRender();
+    }
+
+    public static TextureAtlasSprite getTextureSprite(ResourceLocation location) {
+        return minecraft.getTextureMapBlocks().getTextureExtry(location.toString());
     }
 
     /*
@@ -193,11 +211,13 @@ public class RenderUtils {
         }
     }
 
+
+
+
     public static TextureAtlasSprite getSprite(ItemStack stack) {
         if (renderItem == null) {
             renderItem = Minecraft.getMinecraft().getRenderItem();
         }
-
         return renderItem.getItemModelWithOverrides(stack, null, null).getParticleTexture();
     }
 
