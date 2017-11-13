@@ -31,6 +31,7 @@ minecraft {
     mappings = "snapshot_20170627"
     replace "%VERSION%": "${project.version}"
     useDepAts = true
+    coreMod = "betterwithmods.core.LoadingPlugin"
 }
 
 repositories {
@@ -49,6 +50,7 @@ dependencies {
 jar {
     manifest {
         attributes 'FMLAT': 'bwm_at.cfg'
+        attributes("FMLCorePluginContainsFMLMod": "true", "FMLCorePlugin": "betterwithmods.core.LoadingPlugin")
     }
 }
 

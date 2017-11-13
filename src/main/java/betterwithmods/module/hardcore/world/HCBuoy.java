@@ -248,6 +248,6 @@ public class HCBuoy extends Feature {
 
     @Override
     public boolean hasSubscriptions() {
-        return true;
+        return false;
     }
 }
