@@ -2,6 +2,7 @@ package betterwithmods.module.hardcore.needs;
 
 import betterwithmods.common.BWMBlocks;
 import betterwithmods.common.BWMItems;
+import betterwithmods.common.registry.BrokenToolRegistry;
 import betterwithmods.module.Feature;
 import betterwithmods.util.player.PlayerHelper;
 import net.minecraft.block.Block;
@@ -47,6 +48,7 @@ public class HCPiles extends Feature {
 
     @Override
     public void init(FMLInitializationEvent event) {
+        BrokenToolRegistry.init();
         registerPile(Blocks.DIRT, new ItemStack(BWMItems.DIRT_PILE, 3));
         registerPile(Blocks.DIRT, 1, new ItemStack(BWMItems.DIRT_PILE, 3));
         registerPile(Blocks.DIRT, 2, new ItemStack(BWMItems.DIRT_PILE, 3));
@@ -87,6 +89,11 @@ public class HCPiles extends Feature {
         EntityPlayer player = event.getHarvester();
         if (player != null) {
             ItemStack stack = event.getHarvester().getHeldItemMainhand();
+            if (stack.isEmpty()) {
+                // if the tool broke while harvesting this block...
+                // it's not in the main hand anymore by the time HarvestDropsEvent happens
+                stack = BrokenToolRegistry.getDestroyedItem(player);
+            }
             if (PlayerHelper.isCurrentToolEffectiveOnBlock(stack, event.getState()))
                 return;
         }

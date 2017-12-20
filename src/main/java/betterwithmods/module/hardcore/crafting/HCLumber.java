@@ -2,6 +2,7 @@ package betterwithmods.module.hardcore.crafting;
 
 import betterwithmods.common.BWMRecipes;
 import betterwithmods.common.BWOreDictionary;
+import betterwithmods.common.registry.BrokenToolRegistry;
 import betterwithmods.common.registry.ChoppingRecipe;
 import betterwithmods.module.Feature;
 import betterwithmods.util.InvUtils;
@@ -31,7 +32,12 @@ public class HCLumber extends Feature {
             EntityPlayer player = event.getHarvester();
             if (player != null) {
                 ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-                return stack.getItem().getHarvestLevel(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND), "axe", player, event.getState()) >= 0 || stack.getItem().getToolClasses(player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND)).contains("axe");
+                if (stack.isEmpty()) {
+                    // if the tool broke while harvesting this block...
+                    // it's not in the main hand anymore by the time HarvestDropsEvent happens
+                    stack = BrokenToolRegistry.getDestroyedItem(player);
+                }
+                return stack.getItem().getHarvestLevel(stack, "axe", player, event.getState()) >= 0 || stack.getItem().getToolClasses(stack).contains("axe");
             }
         }
         return event.isSilkTouching();
@@ -55,7 +61,7 @@ public class HCLumber extends Feature {
 
     @Override
     public void init(FMLInitializationEvent event) {
-
+        BrokenToolRegistry.init();
     }
 
     @Override
