@@ -21,11 +21,17 @@ public class HCFurnace extends Feature {
         enabledByDefault = false;
     }
 
+    public static int DEFAULT_FURNACE_TIMING = 200;
     public static HashMap<Ingredient, Integer> FURNACE_TIMINGS = Maps.newHashMap();
 
     public static final Block FURNACE = new BlockFurnace(false).setRegistryName("minecraft:furnace");
     public static final Block LIT_FURNACE = new BlockFurnace(true).setRegistryName("minecraft:lit_furnace");
 
+    @Override
+    public void setupConfig()
+    {
+        DEFAULT_FURNACE_TIMING = loadPropInt("Default Furnace Timing", "Default number of ticks for an item to smelt in the furnace (vanilla is 200)", "", 200, 1, Integer.MAX_VALUE);
+    }
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {

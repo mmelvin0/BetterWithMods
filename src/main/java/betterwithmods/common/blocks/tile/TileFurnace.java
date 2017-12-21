@@ -12,7 +12,7 @@ import java.util.Map;
 public class TileFurnace extends TileEntityFurnace {
     @Override
     public int getCookTime(ItemStack stack) {
-        return HCFurnace.FURNACE_TIMINGS.entrySet().stream().filter(e -> e.getKey().apply(stack)).mapToInt(Map.Entry::getValue).findAny().orElse(200);
+        return HCFurnace.FURNACE_TIMINGS.entrySet().stream().filter(e -> e.getKey().apply(stack)).mapToInt(Map.Entry::getValue).findAny().orElse(HCFurnace.DEFAULT_FURNACE_TIMING);
     }
 
     public void update()
