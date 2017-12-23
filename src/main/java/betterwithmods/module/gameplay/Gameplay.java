@@ -40,6 +40,7 @@ public class Gameplay extends Module {
     public void setupConfig() {
         crankExhaustion = loadPropDouble("Crank Exhaustion", "How much saturation turning the crank eats. Set to 0.0 to disable.", 6.0, 0.0, 6.0 );
         kidFriendly = loadPropBool("Kid Friendly","Makes some features more kid friendly", false);
+        super.setupConfig();
     }
 
     @Override
