@@ -1,5 +1,8 @@
 {
   "recipes": {
     "cutting_recipe": "betterwithmods.common.registry.CuttingRecipe$Factory"
+  },
+  "conditions": {
+    "config": "betterwithmods.module.ConfigHelper$ConditionConfig"
   }
 }

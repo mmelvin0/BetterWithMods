@@ -15,10 +15,11 @@ import betterwithmods.module.gameplay.Gameplay;
 import betterwithmods.module.hardcore.Hardcore;
 import betterwithmods.module.industry.Industry;
 import betterwithmods.module.tweaks.Tweaks;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -28,22 +29,25 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public final class ModuleLoader {
 
-    public static Map<Class<? extends Module>, Module> moduleInstances = new HashMap();
-    public static Map<Class<? extends Feature>, Feature> featureInstances = new HashMap();
+    public static Map<Class<? extends Module>, Module> moduleInstances = Maps.newHashMap();
+    public static Map<Class<? extends Feature>, Feature> featureInstances = Maps.newHashMap();
     public static List<Module> enabledModules;
     public static Configuration config;
     public static File configFile;
     private static List<Class<? extends Module>> moduleClasses;
 
     static {
-        moduleClasses = new ArrayList();
-        registerModule(Hardcore.class);
+        moduleClasses = Lists.newArrayList();
         registerModule(Gameplay.class);
+        registerModule(Hardcore.class);
         registerModule(Tweaks.class);
         registerModule(CompatModule.class);
         registerModule(Industry.class);
@@ -60,10 +64,10 @@ public final class ModuleLoader {
 
         setupConfig(event);
 
-        forEachModule(module -> FMLLog.info("[BWM] Module " + module.name + " is " + (module.enabled ? "enabled" : "disabled")));
-        Collections.sort(enabledModules, (a,b) -> Integer.compare(b.getPriority(),a.getPriority()));
+        forEachModule(module -> BWMod.logger.info("[BWM] Module " + module.name + " is " + (module.enabled ? "enabled" : "disabled")));
+        enabledModules.sort(Comparator.comparingInt(Module::getPriority));
         forEachEnabled(module -> {
-            FMLLog.info("[BWM] Module PreInit : " + module.name);
+            BWMod.logger.info("[BWM] Module PreInit : " + module.name);
             module.preInit(event);
         });
     }
@@ -167,7 +171,7 @@ public final class ModuleLoader {
     }
 
     public static boolean isFeatureEnabled(Class<? extends Feature> clazz) {
-        if(featureInstances.containsKey(clazz))
+        if (featureInstances.containsKey(clazz))
             return featureInstances.get(clazz).enabled;
         return false;
     }

@@ -13,7 +13,7 @@
                             "damage": {
                                 "min": 0,
                                 "max": 0.20
-                            },
+                            }
                         },
                         {
                             "function": "set_attributes",

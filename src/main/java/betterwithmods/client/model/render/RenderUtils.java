@@ -16,7 +16,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.image.BufferedImage;
@@ -63,19 +65,20 @@ public class RenderUtils {
     }
 
     public static void renderFill(ResourceLocation textureLocation, BlockPos pos, double x, double y, double z, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        renderFill(textureLocation, pos, x, y, z, minX, minY, minZ, maxX, maxY, maxZ, EnumFacing.VALUES);
+    }
+
+    public static void renderFill(ResourceLocation textureLocation, BlockPos pos, double x, double y, double z, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, EnumFacing[] facing) {
         Tessellator t = Tessellator.getInstance();
         BufferBuilder renderer = t.getBuffer();
         renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        int brightness = minecraft.world.getCombinedLight(pos, minecraft.world.getLight(pos));
+        int brightness = minecraft.world.getCombinedLight(pos, Math.max(5, minecraft.world.getLight(pos)));
         preRender(x, y, z);
 
         TextureAtlasSprite sprite = minecraft.getTextureMapBlocks().getTextureExtry(textureLocation.toString());
-        drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.UP);
-        drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.WEST);
-        drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.EAST);
-        drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.NORTH);
-        drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, EnumFacing.SOUTH);
+        for (EnumFacing f : facing)
+            drawTexturedQuad(renderer, sprite, minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ, brightness, f);
 
         t.draw();
         postRender();
@@ -84,7 +87,7 @@ public class RenderUtils {
     /*
     Everything from this point onward was shamelessly taken from Tinkers Construct. I'm sorry, but at some point, models are just too limited.
      */
-    private static void preRender(double x, double y, double z) {
+    public static void preRender(double x, double y, double z) {
         GlStateManager.pushMatrix();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.enableBlend();
@@ -97,13 +100,13 @@ public class RenderUtils {
         GlStateManager.translate(x, y, z);
     }
 
-    private static void postRender() {
+    public static void postRender() {
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
         RenderHelper.enableStandardItemLighting();
     }
 
-    private static void drawTexturedQuad(BufferBuilder renderer, TextureAtlasSprite sprite, double x, double y, double z, double w, double h, double d, int brightness, EnumFacing facing) {
+    public static void drawTexturedQuad(BufferBuilder renderer, TextureAtlasSprite sprite, double x, double y, double z, double w, double h, double d, int brightness, EnumFacing facing) {
         if (sprite == null) {
             sprite = minecraft.getTextureMapBlocks().getMissingSprite();
         }
@@ -247,4 +250,13 @@ public class RenderUtils {
         }
     }
 
+    public static IModel getModel(ResourceLocation location) {
+        try {
+            return ModelLoaderRegistry.getModel(location);
+        } catch (Exception e) {
+            BWMod.logger.error("Model " + location.toString() + " is missing! THIS WILL CAUSE A CRASH!");
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

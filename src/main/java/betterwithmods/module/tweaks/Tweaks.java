@@ -8,6 +8,7 @@ import betterwithmods.module.Module;
 public class Tweaks extends Module {
     @Override
     public void addFeatures() {
+        registerFeature(new FastStick());
         registerFeature(new AxeLeaves());
         registerFeature(new CreeperShearing());
         registerFeature(new Dung());

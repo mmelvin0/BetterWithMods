@@ -46,6 +46,8 @@ public class Feature {
     public boolean forceLoad;
     protected boolean canDisable = true;
 
+    public boolean recipeCondition;
+
     public final void setupConstantConfig() {
         String[] incompat = getIncompatibleMods();
         if (incompat != null && incompat.length > 0) {
@@ -176,11 +178,15 @@ public class Feature {
     }
 
     public final List<ItemStack> loadItemStackList(String propName, String comment, ItemStack[] default_) {
-        return ConfigHelper.loadItemStackList(propName,configCategory,comment,default_);
+        return ConfigHelper.loadItemStackList(propName, configCategory, comment, default_);
     }
 
-    public final HashMap<Ingredient,Integer> loadItemStackIntMap(String propName, String comment, String[] _default) {
-        return ConfigHelper.loadItemStackIntMap(propName,configCategory,comment,_default);
+    public final HashMap<Ingredient, Integer> loadItemStackIntMap(String propName, String comment, String[] _default) {
+        return ConfigHelper.loadItemStackIntMap(propName, configCategory, comment, _default);
+    }
+
+    public final void loadRecipeCondition(String jsonName, String propName, String comment, boolean _default) {
+        ConfigHelper.loadRecipeCondition(jsonName, propName, configCategory, comment, _default);
     }
 
     public IRecipe addHardcoreRecipe(IRecipe recipe) {

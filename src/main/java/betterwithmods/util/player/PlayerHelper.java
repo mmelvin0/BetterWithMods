@@ -20,6 +20,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -39,9 +40,23 @@ public final class PlayerHelper {
     private PlayerHelper() {
     }
 
-    public static boolean isHolding(EntityPlayer player, List<ItemStack> stacks) {
+    public static ItemStack getHolding(EntityPlayer player) {
+        ItemStack held;
+        if (player.world.isRemote) {
+            held = player.getHeldItem(EnumHand.MAIN_HAND);
+            if (held.isEmpty()) {
+                held = player.getHeldItem(EnumHand.OFF_HAND);
+            }
+        } else {
+            held = player.getHeldItem(player.getActiveHand());
+        }
+        return held;
+    }
 
-        ItemStack held = player.getHeldItem(player.getActiveHand());
+    public static boolean isHolding(EntityPlayer player, List<ItemStack> stacks) {
+        ItemStack held = getHolding(player);
+        if (held.isEmpty())
+            return false;
         for (ItemStack stack : stacks) {
             if (held.isItemEqual(stack))
                 return true;

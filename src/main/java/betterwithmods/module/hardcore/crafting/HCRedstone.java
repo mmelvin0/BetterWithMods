@@ -21,6 +21,9 @@ public class HCRedstone extends Feature {
 
     public static boolean stoneDeviceRecipesAnvil;
 
+    public HCRedstone() {
+    }
+
     @Override
     public void setupConfig() {
         stoneDeviceRecipesAnvil = loadPropBool("Stone Device Recipes Require Anvil", "Makes it so stone buttons and pressure plates require cut stone, which must be done in the anvil", true);

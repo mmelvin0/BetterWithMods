@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "config",
+      "enabled": "higheff"
+    }
+  ],
+  "result": {
+    "item": "minecraft:acacia_stairs"
+  },
+  "pattern": [
+    "M ",
+    "MM"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "item": "betterwithmods:wood_moulding",
+      "data": 4
+    }
+  }
+}

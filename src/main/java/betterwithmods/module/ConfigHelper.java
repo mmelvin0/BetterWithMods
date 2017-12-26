@@ -11,17 +11,22 @@
 package betterwithmods.module;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.common.crafting.IConditionFactory;
+import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreIngredient;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 
 public class ConfigHelper {
@@ -29,6 +34,20 @@ public class ConfigHelper {
     public static boolean needsRestart;
     public static boolean allNeedRestart = false;
 
+
+    public static HashMap<String, Boolean> CONDITIONS = Maps.newHashMap();
+
+    public static void loadRecipeCondition(String jsonString, String propName, String category, String desc, boolean default_) {
+        CONDITIONS.put(jsonString, loadPropBool(propName, category, desc, default_));
+    }
+
+    public static class ConditionConfig implements IConditionFactory {
+        @Override
+        public BooleanSupplier parse(JsonContext context, JsonObject json) {
+            String enabled = JsonUtils.getString(json, "enabled");
+            return () -> CONDITIONS.get(enabled);
+        }
+    }
 
     public static int[] loadPropIntList(String propName, String category, String comment, int[] default_) {
         Property prop = ModuleLoader.config.get(category, propName, default_, comment);
@@ -108,7 +127,7 @@ public class ConfigHelper {
     }
 
     private static Ingredient ingredientfromString(String name) {
-        if(name.startsWith("ore:"))
+        if (name.startsWith("ore:"))
             return new OreIngredient(name.substring(4));
         String[] split = name.split(":");
         if (split.length > 1) {
@@ -139,9 +158,9 @@ public class ConfigHelper {
     }
 
 
-    public static HashMap<Ingredient, Integer> loadItemStackIntMap(String propName, String category, String desc,String[] _default) {
+    public static HashMap<Ingredient, Integer> loadItemStackIntMap(String propName, String category, String desc, String[] _default) {
         HashMap<Ingredient, Integer> map = Maps.newHashMap();
-        for(String s: loadPropStringList(propName, category, desc, _default)) {
+        for (String s : loadPropStringList(propName, category, desc, _default)) {
             String[] a = s.split("=");
             if (a.length == 2) {
                 map.put(ConfigHelper.ingredientfromString(a[0]), Integer.parseInt(a[1]));

@@ -259,6 +259,8 @@ public abstract class BlockMini extends BlockRotate implements IMultiVariants, I
         return null;
     }
 
+
+
     public enum EnumType {
 
         STONE(0, "stone", Blocks.STONE),
