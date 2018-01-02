@@ -46,7 +46,7 @@ public class ConfigHelper {
         @Override
         public BooleanSupplier parse(JsonContext context, JsonObject json) {
             String enabled = JsonUtils.getString(json, "enabled");
-            return () -> CONDITIONS.get(enabled);
+            return () -> CONDITIONS.getOrDefault(enabled, false);
         }
     }
 
