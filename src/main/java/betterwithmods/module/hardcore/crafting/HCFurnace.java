@@ -130,8 +130,10 @@ public class HCFurnace extends Feature {
 
     @SubscribeEvent
     public void getFurnaceFuel(FurnaceFuelBurnTimeEvent event) {
-        int speed = FUEL_TIMINGS.entrySet().stream().filter(e -> e.getKey().apply(event.getItemStack())).mapToInt(Map.Entry::getValue).findAny().orElse(event.getBurnTime());
-        event.setBurnTime(speed);
+        int speed = FUEL_TIMINGS.entrySet().stream().filter(e -> e.getKey().apply(event.getItemStack())).mapToInt(Map.Entry::getValue).findAny().orElse(-1);
+        if (speed >= 0) {
+            event.setBurnTime(speed);
+        }
     }
 
 
